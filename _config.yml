@@ -207,6 +207,8 @@ defaults:
       type: posts
     values:
       layout: home
+      sidebar:
+        nav: docs-en
       sharing: true
       license: true
       aside:
