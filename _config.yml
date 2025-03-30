@@ -16,8 +16,8 @@
 
 ## => Site Settings
 ##############################
-text_skin: default # "default" (default), "dark", "forest", "ocean", "chocolate", "orange"
-highlight_theme: default # "default" (default), "tomorrow", "tomorrow-night", "tomorrow-night-eighties", "tomorrow-night-blue", "tomorrow-night-bright"
+text_skin: forest # "default" (default), "dark", "forest", "ocean", "chocolate", "orange"
+highlight_theme: tomorrow-night # "default" (default), "tomorrow", "tomorrow-night", "tomorrow-night-eighties", "tomorrow-night-blue", "tomorrow-night-bright"
 url     : # the base hostname & protocol for your site e.g. https://www.someone.com
 baseurl : # does not include hostname
 title   : moons develop blog
@@ -201,14 +201,17 @@ exclude:
   - /test
   - /vendor
 
+sidebar:
+  style: "default" # "overlay"로 하면 클릭해야 보이는 형식, "default"는 항상 표시
+  enable: true
+  pinned: true # 항상 고정
+
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: home
-      sidebar:
-        nav: docs-en
       sharing: true
       license: true
       aside:
@@ -216,7 +219,6 @@ defaults:
       show_edit_on_github: true
       show_subscribe: true
       pageview: true
-
 
 ## => Plugins
 ##############################
