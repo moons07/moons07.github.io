@@ -87,3 +87,8 @@ TeXt use [Tomorrow](https://github.com/chriskempson/tomorrow-theme) as the highl
 ## License
 
 TeXt Theme is [MIT licensed](https://github.com/kitian616/jekyll-TeXt-theme/blob/master/LICENSE).
+
+
+### local 실행
+
+bundle exec jekyll serve
