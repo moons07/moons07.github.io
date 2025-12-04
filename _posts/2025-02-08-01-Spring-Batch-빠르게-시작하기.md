@@ -5,7 +5,7 @@
 - IntelliJ에서 Spring Boot를 사용한 Spring Batch 프로젝트 Setting시 다음과 같은 방법을 구성 가능
   - File > New > Project… > Generators > Spring Boot
 
-  ![new_project.png](assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/new_project.png)
+  ![new_project.png](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/new_project.png)
 
 
 > **Spring Boot란?**
@@ -23,7 +23,7 @@
 - 위 프로젝트 구성시 application, package name 등을 작성하고 Next 버튼을 클릭하면 프로젝트 구성시 의존성을 선택 가능
   - Spring Batch 프로젝트를 생성하는 것이므로 Spring Batch 의존성을 선택 후 Create
 
-![dependency.png](assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/dependency.png)
+![dependency.png](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/dependency.png)
 
 ## 배치를 위한 기본 설정
 
@@ -111,7 +111,7 @@ Spring Batch에서 배치 처리를 위한 설정을 간편하게 활성화하�
 - Application을 실행시키면 아래와 같은 오류 발생
 - Spring Batch를 실행시키기 위해선 실행한 Job, Step 등의 정보를 데이터베이스에 저장하며, 이를 위해 DataSource 설정이 안되어 있으므로 오류가 발생
 
-![error.png](assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/error.png)
+![error.png](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/error.png)
 
 ## **DataSource 구성하기**
 
@@ -150,7 +150,7 @@ spring:
 
 - Spring Batch를 수행하면 아래와 같이 Spring Batch를 위한 테이블이 자동으로 생성
 
-![[https://docs.spring.io/spring-batch/reference/schema-appendix.html](https://docs.spring.io/spring-batch/reference/schema-appendix.html)](assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/spring_batch_schema.png)
+![[https://docs.spring.io/spring-batch/reference/schema-appendix.html](https://docs.spring.io/spring-batch/reference/schema-appendix.html)](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/spring_batch_schema.png)
 
 [https://docs.spring.io/spring-batch/reference/schema-appendix.html](https://docs.spring.io/spring-batch/reference/schema-appendix.html)
 
