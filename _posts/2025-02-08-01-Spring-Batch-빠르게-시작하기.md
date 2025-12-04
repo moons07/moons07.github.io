@@ -2,9 +2,11 @@
 title: 01 Spring Batch 빠르게 시작하기
 tags: SpringBatch
 ---
-# **Spring Batch 초기화 및 스프링배치 필요정보**
+# 01 Spring Batch 빠르게 시작하기
 
-## 기본 프로젝트 구성하기
+## **Spring Batch 초기화 및 스프링배치 필요정보**
+
+### 기본 프로젝트 구성하기
 
 - IntelliJ에서 Spring Boot를 사용한 Spring Batch 프로젝트 Setting시 다음과 같은 방법을 구성 가능
   - File > New > Project… > Generators > Spring Boot
@@ -29,7 +31,7 @@ tags: SpringBatch
 
 ![dependency.png](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/dependency.png)
 
-## 배치를 위한 기본 설정
+### 배치를 위한 기본 설정
 
 - Spring Boot를 통해 프로젝트 구성을 완료하면 아래와 같이 **build.gradle 파일이 생성 (Project Type을 maven으로 지정했을 경우 pom.xml)**
   - `implementation 'org.springframework.boot:spring-boot-starter-batch'`을 통해 Spring Batch에 대한 의존성이 추가된 것을 알수 있음
@@ -68,7 +70,7 @@ tasks.named('test') {
 }
 ```
 
-## 배치 기동시키기
+### 배치 기동시키기
 
 - Spring Batch로 실행시키기 위해선 `@EnableBatchProcessing`  애노테이션을 Spring Boot Application 클래스에 붙여 실행
 
@@ -110,14 +112,14 @@ Spring Batch에서 배치 처리를 위한 설정을 간편하게 활성화하�
 참고 : Chat GPT
 >
 
-## 실행해보기
+### 실행해보기
 
 - Application을 실행시키면 아래와 같은 오류 발생
 - Spring Batch를 실행시키기 위해선 실행한 Job, Step 등의 정보를 데이터베이스에 저장하며, 이를 위해 DataSource 설정이 안되어 있으므로 오류가 발생
 
 ![error.png](/assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/error.png)
 
-## **DataSource 구성하기**
+### **DataSource 구성하기**
 
 - Spring Batch를 간단한 테스트 용도로 사용할 것이기 때문에 메모리 기반의 DB를 사용 (H2 Database)
 - 아래와 같이 **build.gradle에 의존성을 추가**
@@ -150,7 +152,7 @@ spring:
     password: test
 ```
 
-# Spring Batch 스키마 구조
+## Spring Batch 스키마 구조
 
 - Spring Batch를 수행하면 아래와 같이 Spring Batch를 위한 테이블이 자동으로 생성
 
@@ -158,7 +160,7 @@ spring:
 
 [https://docs.spring.io/spring-batch/reference/schema-appendix.html](https://docs.spring.io/spring-batch/reference/schema-appendix.html)
 
-## **BATCH_JOB_INSTANCE 테이블**
+### **BATCH_JOB_INSTANCE 테이블**
 
 - 스키마중 가장 기본이 되는 테이블
 - 배치가 수행되면 Job이 생성이 되고, 해당 잡 인스턴스에 대해서 관련된 모든 정보를 가진 최상위 테이블
@@ -170,7 +172,7 @@ spring:
 | JOB_NAME | `VARCHAR(100)` | NOT NULL | 배치 잡 객체로 획득한 잡 이름, 인스턴스를 식별하기 위해 필요 |
 | JOB_KEY | `VARCHAR(32)` | NOT NULL | JobParameter를 직렬화한 데이터 값이자 동일한 잡을 다른 잡과 구분하는 값.<br>잡은 이 JobParameter가 동일할 수 없으며, JOB_KEY는 구별될수 있도록 달라야한다. |
 
-## **BATCH_JOB_EXECUTION 테이블**
+### **BATCH_JOB_EXECUTION 테이블**
 
 - JobExecution과 관련된 모든 정보를 저장
 - Job이 매번 실행될때, JobExecution이라는 새로운 객체가 있으며, 이 테이블에 새로운 row로 생성
@@ -188,7 +190,7 @@ spring:
 | EXIT_MESSAGE | `VARCHAR(2500)` | NULL | job이 종료되는 경유 어떻게 종료 되었는지 저장 |
 | LAST_UPDATED | `TIMESTAMP` | NULL | execution이 마지막으로 지속된 시간 |
 
-## **BATCH_JOB_EXECUTION_PARAMS 테이블**
+### **BATCH_JOB_EXECUTION_PARAMS 테이블**
 
 - JobParameter에 대한 정보를 저장하는 테이블
 - 하나 이상의 key/value 쌍으로 Job에 전달되며, job이 실행될 때 전달된 파라미터 정보를 저장
@@ -203,7 +205,7 @@ spring:
 | PARAMETER_VALUE | `VARCHAR(2500)` | NOT NULL | 파라미터 값 |
 | IDENTIFYING | `CHAR(1)` | NOT NULL | 파라미터가 JobInstance의 유일하게 사용되는 파라미터라면 'Y' |
 
-## **BATCH_JOB_EXECUTION_CONTEXT 테이블**
+### **BATCH_JOB_EXECUTION_CONTEXT 테이블**
 
 - Job의 ExecutionContext에 대한 정보 저장
 - JobExecution마다 하나의 JobExecutionContext 가지며, 특정 작업 실행에 필요한 작업 수준 데이터 포함
@@ -215,7 +217,7 @@ spring:
 | SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | 직렬화된 context의 문자으로된 버전 |
 | SERIALIZED_CONTEXT | `CLOB` | NULL | 직렬화된 전체 context |
 
-## **BATCH_STEP_EXECUTION 테이블**
+### **BATCH_STEP_EXECUTION 테이블**
 
 - StepExecution과 관련된 정보를 저장
 - BATCH_JOB_EXECUTION 테이블과 유사하며 생성된 JobExecution에 대한 step이 하나이상 존재
@@ -241,7 +243,7 @@ spring:
 | EXIT_MESSAGE | `VARCHAR(2500)` | NULL | job이 종료되는 경유 어떻게 종료 되었는지 저장 |
 | LAST_UPDATED | `TIMESTAMP` | NULL | execution이 마지막으로 지속된 시간 |
 
-## **BATCH_STEP_EXECUTION_CONTEXT 테이블**
+### **BATCH_STEP_EXECUTION_CONTEXT 테이블**
 
 - Step의 ExecutionContext 과 관련된 모든 정보를 가짐
 - StepExecution마다 하나의 ExecutionContext
@@ -254,7 +256,7 @@ spring:
 | SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | 직렬화된 context의 문자으로된 버전 |
 | SERIALIZED_CONTEXT | `CLOB` | NULL | 직렬화된 전체 context |
 
-# SpringBatch Sequences
+## SpringBatch Sequences
 
 - Spring Batch는 기본적으로 시퀀스 테이블 존재
 - 역할
@@ -268,7 +270,7 @@ spring:
   - 데이터베이스 호환성
     - 일부 데이터베이스는 기본적으로 `SEQUENCE`를 지원하지 않기 때문에, 스프링 배치는 `BATCH_JOB_SEQ`와 `BATCH_STEP_SEQ` 테이블을 통해 이 기능을 대신 구현
 
-## **BATCH_JOB_SEQ 테이블**
+### **BATCH_JOB_SEQ 테이블**
 
 - 배치 잡에 대한 시퀀스 테이블
 
@@ -277,7 +279,7 @@ spring:
 | ID | `BIGINT` | 배치 잡의 기본키 |
 | UNIQUE_KEY | `CHAR(1)` | 배치 잡 시퀀스를 구별하는 유니크 키 |
 
-## **BATCH_JOB_EXECUTION_SEQ 테이블**
+### **BATCH_JOB_EXECUTION_SEQ 테이블**
 
 - 배치 잡 execution의 시퀀스 테이블
 
@@ -286,7 +288,7 @@ spring:
 | ID | `BIGINT` | 배치 잡 execution의 기본키 |
 | UNIQUE_KEY | `CHAR(1)` | 배치 잡 execution 시퀀스를 구별하는 유니크 키 |
 
-## **BATCH_STEP_EXECUTION_SEQ 테이블**
+### **BATCH_STEP_EXECUTION_SEQ 테이블**
 
 - 배치 step의 execution 시퀀스 테이블
 
