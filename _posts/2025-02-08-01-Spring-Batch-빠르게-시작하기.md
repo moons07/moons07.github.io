@@ -1,5 +1,5 @@
 ---
-title: Spring Batch 빠르게 시작하기
+title: 01 Spring Batch 빠르게 시작하기
 tags: SpringBatch
 ---
 # **Spring Batch 초기화 및 스프링배치 필요정보**
