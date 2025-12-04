@@ -19,8 +19,10 @@ package org.study.spring_batch_study.reader;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+
 import org.springframework.batch.item.database.AbstractPagingItemReader;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
@@ -30,58 +32,60 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class QuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
-    private EntityManager em;
-    private final Boolean alwaysReadFromZero;
-    private final Function<JPAQueryFactory, JPAQuery<T>> querySupplier;
+  private EntityManager em;
+  private final Boolean alwaysReadFromZero;
+  private final Function<JPAQueryFactory, JPAQuery<T>> querySupplier;
 
-    public QuerydslPagingItemReader(EntityManagerFactory entityManagerFactory, Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize) {
-        this(ClassUtils.getShortName(QuerydslPagingItemReader.class), entityManagerFactory, querySupplier, chunkSize, false);
+  public QuerydslPagingItemReader(EntityManagerFactory entityManagerFactory,
+    Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize) {
+    this(ClassUtils.getShortName(QuerydslPagingItemReader.class), entityManagerFactory, querySupplier, chunkSize,
+      false);
+  }
+
+  public QuerydslPagingItemReader(String name, EntityManagerFactory entityManagerFactory,
+    Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize, Boolean alwaysReadFromZero) {
+    super.setPageSize(chunkSize);
+    setName(name);
+    this.querySupplier = querySupplier;
+    this.em = entityManagerFactory.createEntityManager();
+    this.alwaysReadFromZero = alwaysReadFromZero;
+  }
+
+  @Override
+  protected void doClose() throws Exception {
+    if (em != null) {
+      em.close();
+    }
+    super.doClose();
+  }
+
+  @Override
+  protected void doReadPage() {
+    initQueryResult();
+
+    JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
+    long offset = 0;
+    if (!alwaysReadFromZero) {
+      offset = (long)getPage() * getPageSize();
     }
 
-    public QuerydslPagingItemReader(String name, EntityManagerFactory entityManagerFactory, Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize, Boolean alwaysReadFromZero) {
-        super.setPageSize(chunkSize);
-        setName(name);
-        this.querySupplier = querySupplier;
-        this.em = entityManagerFactory.createEntityManager();
-        this.alwaysReadFromZero = alwaysReadFromZero;
+    JPAQuery<T> query = querySupplier.apply(jpaQueryFactory).offset(offset).limit(getPageSize());
+
+    List<T> queryResult = query.fetch();
+    for (T entity : queryResult) {
+      em.detach(entity);
+      results.add(entity);
     }
+  }
 
-    @Override
-    protected void doClose() throws Exception {
-        if (em != null) {
-            em.close();
-        }
-        super.doClose();
+  private void initQueryResult() {
+    if (CollectionUtils.isEmpty(results)) {
+      results = new CopyOnWriteArrayList<>();
+    } else {
+      results.clear();
     }
-
-    @Override
-    protected void doReadPage() {
-        initQueryResult();
-
-        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
-        long offset = 0;
-        if (!alwaysReadFromZero) {
-            offset = (long) getPage() * getPageSize();
-        }
-
-        JPAQuery<T> query = querySupplier.apply(jpaQueryFactory).offset(offset).limit(getPageSize());
-
-        List<T> queryResult = query.fetch();
-        for (T entity: queryResult) {
-            em.detach(entity);
-            results.add(entity);
-        }
-    }
-
-    private void initQueryResult() {
-        if (CollectionUtils.isEmpty(results)) {
-            results = new CopyOnWriteArrayList<>();
-        } else {
-            results.clear();
-        }
-    }
+  }
 }
-
 ```
 
 - AbstractPagingItemReader을 상속
@@ -90,13 +94,14 @@ public class QuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
 #### 생성자
 
 ```java
-public QuerydslPagingItemReader(String name, EntityManagerFactory entityManagerFactory, Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize, Boolean alwaysReadFromZero) {
-        super.setPageSize(chunkSize);
-        setName(name);
-        this.querySupplier = querySupplier;
-        this.em = entityManagerFactory.createEntityManager();
-        this.alwaysReadFromZero = alwaysReadFromZero;
-    }
+public QuerydslPagingItemReader(String name, EntityManagerFactory entityManagerFactory,
+  Function<JPAQueryFactory, JPAQuery<T>> querySupplier, int chunkSize, Boolean alwaysReadFromZero) {
+  super.setPageSize(chunkSize);
+  setName(name);
+  this.querySupplier = querySupplier;
+  this.em = entityManagerFactory.createEntityManager();
+  this.alwaysReadFromZero = alwaysReadFromZero;
+}
 ```
 
 - name : ItemReader를 구분하기 위한 이름
@@ -154,61 +159,64 @@ package org.study.spring_batch_study.reader;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import jakarta.persistence.EntityManagerFactory;
+
 import org.springframework.util.ClassUtils;
 
 import java.util.function.Function;
 
 public class QuerydslPagingItemReaderBuilder<T> {
-	private EntityManagerFactory entityManagerFactory;
-	private Function<JPAQueryFactory, JPAQuery<T>> querySupplier;
+  private EntityManagerFactory entityManagerFactory;
+  private Function<JPAQueryFactory, JPAQuery<T>> querySupplier;
 
-	private int chunkSize = 10;
+  private int chunkSize = 10;
 
-	private String name;
+  private String name;
 
-	private Boolean alwaysReadFromZero;
+  private Boolean alwaysReadFromZero;
 
-	public QuerydslPagingItemReaderBuilder<T> entityManagerFactory(EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-		return this;
-	}
+  public QuerydslPagingItemReaderBuilder<T> entityManagerFactory(EntityManagerFactory entityManagerFactory) {
+    this.entityManagerFactory = entityManagerFactory;
+    return this;
+  }
 
-	public QuerydslPagingItemReaderBuilder<T> querySupplier(Function<JPAQueryFactory, JPAQuery<T>> querySupplier) {
-		this.querySupplier = querySupplier;
-		return this;
-	}
+  public QuerydslPagingItemReaderBuilder<T> querySupplier(Function<JPAQueryFactory, JPAQuery<T>> querySupplier) {
+    this.querySupplier = querySupplier;
+    return this;
+  }
 
-	public QuerydslPagingItemReaderBuilder<T> chunkSize(int chunkSize) {
-		this.chunkSize = chunkSize;
-		return this;
-	}
+  public QuerydslPagingItemReaderBuilder<T> chunkSize(int chunkSize) {
+    this.chunkSize = chunkSize;
+    return this;
+  }
 
-	public QuerydslPagingItemReaderBuilder<T> name(String name) {
-		this.name = name;
-		return this;
-	}
+  public QuerydslPagingItemReaderBuilder<T> name(String name) {
+    this.name = name;
+    return this;
+  }
 
-	public QuerydslPagingItemReaderBuilder<T> alwaysReadFromZero(Boolean alwaysReadFromZero) {
-		this.alwaysReadFromZero = alwaysReadFromZero;
-		return this;
-	}
+  public QuerydslPagingItemReaderBuilder<T> alwaysReadFromZero(Boolean alwaysReadFromZero) {
+    this.alwaysReadFromZero = alwaysReadFromZero;
+    return this;
+  }
 
-	public QuerydslPagingItemReader<T> build() {
-		if (name == null) {
-			this.name = ClassUtils.getShortName(QuerydslPagingItemReader.class);
-		}
-		if (this.entityManagerFactory == null) {
-			throw new IllegalArgumentException("EntityManagerFactory can not be null.!");
-		}
-		if (this.querySupplier == null) {
-			throw new IllegalArgumentException("Function<JPAQueryFactory, JPAQuery<T>> can not be null.!");
-		}
-		if (this.alwaysReadFromZero == null) {
-			alwaysReadFromZero = false;
-		}
-		return new QuerydslPagingItemReader<>(this.name, entityManagerFactory, querySupplier, chunkSize, alwaysReadFromZero);
-	}
+  public QuerydslPagingItemReader<T> build() {
+    if (name == null) {
+      this.name = ClassUtils.getShortName(QuerydslPagingItemReader.class);
+    }
+    if (this.entityManagerFactory == null) {
+      throw new IllegalArgumentException("EntityManagerFactory can not be null.!");
+    }
+    if (this.querySupplier == null) {
+      throw new IllegalArgumentException("Function<JPAQueryFactory, JPAQuery<T>> can not be null.!");
+    }
+    if (this.alwaysReadFromZero == null) {
+      alwaysReadFromZero = false;
+    }
+    return new QuerydslPagingItemReader<>(this.name, entityManagerFactory, querySupplier, chunkSize,
+      alwaysReadFromZero);
+  }
 }
 ```
 
@@ -221,6 +229,7 @@ package org.study.spring_batch_study.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -245,58 +254,61 @@ import javax.sql.DataSource;
 @Slf4j
 @Configuration
 public class QueryDSLPagingReaderJobConfig {
-	public static final int CHUNK_SIZE = 2;
-	public static final String ENCODING = "UTF-8";
-	public static final String QUERYDSL_PAGING_CHUNK_JOB = "QUERYDSL_PAGING_CHUNK_JOB";
+  public static final int CHUNK_SIZE = 2;
+  public static final String ENCODING = "UTF-8";
+  public static final String QUERYDSL_PAGING_CHUNK_JOB = "QUERYDSL_PAGING_CHUNK_JOB";
 
-	@Autowired
-	DataSource dataSource;
+  @Autowired
+  DataSource dataSource;
 
-	@Autowired
-	EntityManagerFactory entityManagerFactory;
+  @Autowired
+  EntityManagerFactory entityManagerFactory;
 
-	@Bean
-	public QuerydslPagingItemReader<Customer> customerQuerydslPagingItemReader() {
-		return new QuerydslPagingItemReaderBuilder<Customer>()
-				.name("customerQuerydslPagingItemReader")
-				.entityManagerFactory(entityManagerFactory)
-				.chunkSize(2)
-				.querySupplier(jpaQueryFactory -> jpaQueryFactory.select(QCustomer.customer).from(QCustomer.customer).where(QCustomer.customer.age.gt(20)))
-				.build();
-	}
+  @Bean
+  public QuerydslPagingItemReader<Customer> customerQuerydslPagingItemReader() {
+    return new QuerydslPagingItemReaderBuilder<Customer>()
+      .name("customerQuerydslPagingItemReader")
+      .entityManagerFactory(entityManagerFactory)
+      .chunkSize(2)
+      .querySupplier(jpaQueryFactory -> jpaQueryFactory.select(QCustomer.customer)
+        .from(QCustomer.customer)
+        .where(QCustomer.customer.age.gt(20)))
+      .build();
+  }
 
-	@Bean
-	public FlatFileItemWriter<Customer> customerQuerydslFlatFileItemWriter() {
+  @Bean
+  public FlatFileItemWriter<Customer> customerQuerydslFlatFileItemWriter() {
 
-		return new FlatFileItemWriterBuilder<Customer>()
-				.name("customerQuerydslFlatFileItemWriter")
-				.resource(new FileSystemResource("./output/customer_new_v2.csv"))
-				.encoding(ENCODING)
-				.delimited().delimiter("\t")
-				.names("Name", "Age", "Gender")
-				.build();
-	}
+    return new FlatFileItemWriterBuilder<Customer>()
+      .name("customerQuerydslFlatFileItemWriter")
+      .resource(new FileSystemResource("./output/customer_new_v2.csv"))
+      .encoding(ENCODING)
+      .delimited().delimiter("\t")
+      .names("Name", "Age", "Gender")
+      .build();
+  }
 
-	@Bean
-	public Step customerQuerydslPagingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws Exception {
-		log.info("------------------ Init customerQuerydslPagingStep -----------------");
+  @Bean
+  public Step customerQuerydslPagingStep(JobRepository jobRepository,
+    PlatformTransactionManager transactionManager) throws Exception {
+    log.info("------------------ Init customerQuerydslPagingStep -----------------");
 
-		return new StepBuilder("customerJpaPagingStep", jobRepository)
-				.<Customer, Customer>chunk(CHUNK_SIZE, transactionManager)
-				.reader(customerQuerydslPagingItemReader())
-				.processor(new CustomerItemProcessor())
-				.writer(customerQuerydslFlatFileItemWriter())
-				.build();
-	}
+    return new StepBuilder("customerJpaPagingStep", jobRepository)
+      .<Customer, Customer>chunk(CHUNK_SIZE, transactionManager)
+      .reader(customerQuerydslPagingItemReader())
+      .processor(new CustomerItemProcessor())
+      .writer(customerQuerydslFlatFileItemWriter())
+      .build();
+  }
 
-	@Bean
-	public Job customerJpaPagingJob(Step customerJdbcPagingStep, JobRepository jobRepository) {
-		log.info("------------------ Init customerJpaPagingJob -----------------");
-		return new JobBuilder(QUERYDSL_PAGING_CHUNK_JOB, jobRepository)
-				.incrementer(new RunIdIncrementer())
-				.start(customerJdbcPagingStep)
-				.build();
-	}
+  @Bean
+  public Job customerJpaPagingJob(Step customerJdbcPagingStep, JobRepository jobRepository) {
+    log.info("------------------ Init customerJpaPagingJob -----------------");
+    return new JobBuilder(QUERYDSL_PAGING_CHUNK_JOB, jobRepository)
+      .incrementer(new RunIdIncrementer())
+      .start(customerJdbcPagingStep)
+      .build();
+  }
 }
 ```
 
