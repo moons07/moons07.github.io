@@ -42,7 +42,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {  // 빌드와 관련된 java 설정 정의
     toolchain { // 프로젝트에서 특정 Java 버전을 사용하도록 명시
-		    //java 버전 17로 빌드 및 컴파일
+            //java 버전 17로 빌드 및 컴파일
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
@@ -52,7 +52,7 @@ repositories {
 }
 
 dependencies {
-		// spring batch 관련 의존성
+        // spring batch 관련 의존성
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
@@ -161,13 +161,10 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| JOB_INSTANCE_ID | `BIGINT` | NOT NULL | - 인스턴스에 대한 유니크 아이디
-- JobInstance 객체의 getId로 획득이 가능 |
-| VERSION | `BIGINT` | NULL | - 버전정보
-- 특정 잡 인스턴스에 대한 업데이트 발생시 증가하며 동일 버전의 잡 인스터스가 동시에 수행하는 것을 방지 |
-| JOB_NAME | `VARCHAR(100)` | NOT NULL | - 배치 잡 객체로 획득한 잡 이름, 인스턴스를 식별하기 위해 필요 |
-| JOB_KEY | `VARCHAR(32)` | NOT NULL | - JobParameter를 직렬화한 데이터 값이자 동일한 잡을 다른 잡과 구분하는 값
-- 잡은 이 JobParameter가 동일할 수 없으며, JOB_KEY는 구별될수 있도록 달라야한다. |
+| JOB_INSTANCE_ID | `BIGINT` | NOT NULL | 인스턴스에 대한 유니크 아이디.<br>JobInstance 객체의 getId로 획득이 가능 |
+| VERSION | `BIGINT` | NULL | 버전정보.<br>특정 잡 인스턴스에 대한 업데이트 발생시 증가하며 동일 버전의 잡 인스터스가 동시에 수행하는 것을 방지 |
+| JOB_NAME | `VARCHAR(100)` | NOT NULL | 배치 잡 객체로 획득한 잡 이름, 인스턴스를 식별하기 위해 필요 |
+| JOB_KEY | `VARCHAR(32)` | NOT NULL | JobParameter를 직렬화한 데이터 값이자 동일한 잡을 다른 잡과 구분하는 값.<br>잡은 이 JobParameter가 동일할 수 없으며, JOB_KEY는 구별될수 있도록 달라야한다. |
 
 ## **BATCH_JOB_EXECUTION 테이블**
 
@@ -176,20 +173,16 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | - 배치 잡 실행 아이디
-- 실행을 유니크하게 구분
-- JobExecution 객체의 getId메소드로 획득이 가능 |
-  | VERSION | `BIGINT` | NULL | - 버전정보 |
-  | JOB_INSTANCE_ID | `BIGINT` | NOT NULL | - BATCH_JOB_INSTANCE 테이블의 PK로 FK |
-  | CREATE_TIME | `TIMESTAMP` | NOT NULL | - execution이 생성된 시간 |
-  | START_TIME | `TIMESTAMP` | NULL | - execution이 시작된 시간 |
-  | END_TIME | `TIMESTAMP` | NULL | - execution이 종료된 시간
-- 성공/실패든 시간은 저장
-- 실행중엔 NULL이며 비어 있다면, 배치 잡 수행 오류가 발생하여 종료된 시간을 저장을 수행할 수 없었을 경우에도 NULL |
-  | STATUS | `VARCHAR(10)` | NULL | - execution의 현재 상태 (COMPLETED, STARTED 등..) |
-  | EXIT_CODE | `VARCHAR(20)` | NULL | - execution의 종료 코드 |
-  | EXIT_MESSAGE | `VARCHAR(2500)` | NULL | - job이 종료되는 경유 어떻게 종료 되었는지 저장 |
-  | LAST_UPDATED | `TIMESTAMP` | NULL | - execution이 마지막으로 지속된 시간 |
+| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | 배치 잡 실행 아이디.<br>실행을 유니크하게 구분.<br>JobExecution 객체의 getId메소드로 획득이 가능 |
+| VERSION | `BIGINT` | NULL | 버전정보 |
+| JOB_INSTANCE_ID | `BIGINT` | NOT NULL | BATCH_JOB_INSTANCE 테이블의 PK로 FK |
+| CREATE_TIME | `TIMESTAMP` | NOT NULL | execution이 생성된 시간 |
+| START_TIME | `TIMESTAMP` | NULL | execution이 시작된 시간 |
+| END_TIME | `TIMESTAMP` | NULL | execution이 종료된 시간.<br>성공/실패든 시간은 저장.<br>실행중엔 NULL이며 비어 있다면, 배치 잡 수행 오류가 발생하여 종료된 시간을 저장을 수행할 수 없었을 경우에도 NULL |
+| STATUS | `VARCHAR(10)` | NULL | execution의 현재 상태 (COMPLETED, STARTED 등..) |
+| EXIT_CODE | `VARCHAR(20)` | NULL | execution의 종료 코드 |
+| EXIT_MESSAGE | `VARCHAR(2500)` | NULL | job이 종료되는 경유 어떻게 종료 되었는지 저장 |
+| LAST_UPDATED | `TIMESTAMP` | NULL | execution이 마지막으로 지속된 시간 |
 
 ## **BATCH_JOB_EXECUTION_PARAMS 테이블**
 
@@ -200,13 +193,11 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | - 배치 잡 실행 아이디
-- BATCH_JOB_EXECUTION 테이블의 PK로 FK
-- 실행마다 여러 key, value를 row로 저장 |
-  | PARAMETER_NAME | `VARCHAR(100)` | NOT NULL | - 파라미터 이름 |
-  | PARAMETER_TYPE | `VARCHAR(100)` | NOT NULL | - 파라미터 타입 |
-  | PARAMETER_VALUE | `VARCHAR(2500)` | NOT NULL | - 파라미터 값 |
-  | IDENTIFYING | `CHAR(1)` | NOT NULL | - 파라미터가 JobInstance의 유일하게 사용되는 파라미터라면 ‘Y’ |
+| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | 배치 잡 실행 아이디.<br>BATCH_JOB_EXECUTION 테이블의 PK로 FK.<br>실행마다 여러 key, value를 row로 저장 |
+| PARAMETER_NAME | `VARCHAR(100)` | NOT NULL | 파라미터 이름 |
+| PARAMETER_TYPE | `VARCHAR(100)` | NOT NULL | 파라미터 타입 |
+| PARAMETER_VALUE | `VARCHAR(2500)` | NOT NULL | 파라미터 값 |
+| IDENTIFYING | `CHAR(1)` | NOT NULL | 파라미터가 JobInstance의 유일하게 사용되는 파라미터라면 'Y' |
 
 ## **BATCH_JOB_EXECUTION_CONTEXT 테이블**
 
@@ -216,10 +207,9 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | - 배치 잡 실행 아이디
-- BATCH_JOB_EXECUTION 테이블의 PK로 FK |
-| SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | - 직렬화된 context의 문자으로된 버전 |
-| SERIALIZED_CONTEXT | `CLOB` | NULL | - 직렬화된 전체 context |
+| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | 배치 잡 실행 아이디.<br>BATCH_JOB_EXECUTION 테이블의 PK로 FK |
+| SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | 직렬화된 context의 문자으로된 버전 |
+| SERIALIZED_CONTEXT | `CLOB` | NULL | 직렬화된 전체 context |
 
 ## **BATCH_STEP_EXECUTION 테이블**
 
@@ -228,29 +218,24 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| STEP_EXECUTION_ID | `BIGINT` | NOT NULL | - step 실행의 유니크한 아이디
-- StepExecution 객체의 getId를 통해 조회가 가능 |
-| VERSION | `BIGINT` | NOT NULL | - 버전정보 |
-| STEP_NAME | `BIGINT` | NOT NULL | - BATCH_JOB_INSTANCE 테이블의 PK로 FK |
-| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | - BATCH_JOB_EXECUTION 테이블에 대한 FK
-- JobExecution에 StepExecution 속한다는 의미
-- JobExecution에 대해 Step명은 유니크해야함 |
-  | START_TIME | `TIMESTAMP` | NULL | - execution이 시작된 시간 |
-  | END_TIME | `TIMESTAMP` | NULL | - execution이 종료된 시간
-- 성공/실패든 시간은 저장
-- 실행중엔 NULL이며 비어 있다면, 배치 잡 수행 오류가 발생하여 종료된 시간을 저장을 수행할 수 없었을 경우에도 NULL |
-  | STATUS | `VARCHAR(10)` | NULL | - execution의 현재 상태 (COMPLETED, STARTED 등..) |
-  | COMMIT_COUNT | `BIGINT` | NULL | - execution 동산 트랜잭션 커밋된 카운트 |
-  | READ_COUNT | `BIGINT` | NULL | - 실행된 동안 읽어들인 아이템 수 |
-  | FILTER_COUNT | `BIGINT` | NULL | - 실행동안 필터된 아이템 수 |
-  | WRITE_COUNT | `BIGINT` | NULL | - 실행동안 쓰기된 아이템 수 |
-  | READ_SKIP_COUNT | `BIGINT` | NULL | - 실행동안 읽기시 스킵된 아이템수 |
-  | WRITE_SKIP_COUNT | `BIGINT` | NULL | - 실행동안 쓰기시 스킵된 아이템수 |
-  | PROCESS_SKIP_COUNT | `BIGINT` | NULL | - 실행동안 프로세서가 스킵된 아이템 수 |
-  | ROLLBACK_COUNT | `BIGINT` | NULL | - 실행동안 롤백된 아이템수 |
-  | EXIT_CODE | `VARCHAR(20)` | NULL | - execution의 종료 코드 |
-  | EXIT_MESSAGE | `VARCHAR(2500)` | NULL | - job이 종료되는 경유 어떻게 종료 되었는지 저장 |
-  | LAST_UPDATED | `TIMESTAMP` | NULL | - execution이 마지막으로 지속된 시간 |
+| STEP_EXECUTION_ID | `BIGINT` | NOT NULL | step 실행의 유니크한 아이디.<br>StepExecution 객체의 getId를 통해 조회가 가능 |
+| VERSION | `BIGINT` | NOT NULL | 버전정보 |
+| STEP_NAME | `BIGINT` | NOT NULL | BATCH_JOB_INSTANCE 테이블의 PK로 FK |
+| JOB_EXECUTION_ID | `BIGINT` | NOT NULL | BATCH_JOB_EXECUTION 테이블에 대한 FK.<br>JobExecution에 StepExecution 속한다는 의미.<br>JobExecution에 대해 Step명은 유니크해야함 |
+| START_TIME | `TIMESTAMP` | NULL | execution이 시작된 시간 |
+| END_TIME | `TIMESTAMP` | NULL | execution이 종료된 시간.<br>성공/실패든 시간은 저장.<br>실행중엔 NULL이며 비어 있다면, 배치 잡 수행 오류가 발생하여 종료된 시간을 저장을 수행할 수 없었을 경우에도 NULL |
+| STATUS | `VARCHAR(10)` | NULL | execution의 현재 상태 (COMPLETED, STARTED 등..) |
+| COMMIT_COUNT | `BIGINT` | NULL | execution 동안 트랜잭션 커밋된 카운트 |
+| READ_COUNT | `BIGINT` | NULL | 실행된 동안 읽어들인 아이템 수 |
+| FILTER_COUNT | `BIGINT` | NULL | 실행동안 필터된 아이템 수 |
+| WRITE_COUNT | `BIGINT` | NULL | 실행동안 쓰기된 아이템 수 |
+| READ_SKIP_COUNT | `BIGINT` | NULL | 실행동안 읽기시 스킵된 아이템수 |
+| WRITE_SKIP_COUNT | `BIGINT` | NULL | 실행동안 쓰기시 스킵된 아이템수 |
+| PROCESS_SKIP_COUNT | `BIGINT` | NULL | 실행동안 프로세서가 스킵된 아이템 수 |
+| ROLLBACK_COUNT | `BIGINT` | NULL | 실행동안 롤백된 아이템수 |
+| EXIT_CODE | `VARCHAR(20)` | NULL | execution의 종료 코드 |
+| EXIT_MESSAGE | `VARCHAR(2500)` | NULL | job이 종료되는 경유 어떻게 종료 되었는지 저장 |
+| LAST_UPDATED | `TIMESTAMP` | NULL | execution이 마지막으로 지속된 시간 |
 
 ## **BATCH_STEP_EXECUTION_CONTEXT 테이블**
 
@@ -261,10 +246,9 @@ spring:
 
 | 컬럼명 | 타입 | Nullable | 설명 |
 | --- | --- | --- | --- |
-| STEP_EXECUTION_ID | `BIGINT` | NOT NULL | - StepExecution의 키
-- execution에 연관된 모든 row가 존재 |
-| SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | - 직렬화된 context의 문자으로된 버전 |
-| SERIALIZED_CONTEXT | `CLOB` | NULL | - 직렬화된 전체 context |
+| STEP_EXECUTION_ID | `BIGINT` | NOT NULL | StepExecution의 키.<br>execution에 연관된 모든 row가 존재 |
+| SHORT_CONTEXT | `VARCHAR(2500)` | NOT NULL | 직렬화된 context의 문자으로된 버전 |
+| SERIALIZED_CONTEXT | `CLOB` | NULL | 직렬화된 전체 context |
 
 # SpringBatch Sequences
 
@@ -286,8 +270,8 @@ spring:
 
 | 컬럼명 | 타입 | 설명 |
 | --- | --- | --- |
-| ID | `BIGINT` | - 배치 잡의 기본키 |
-| UNIQUE_KEY | `CHAR(1)` | - 배치 잡 시퀀스를 구별하는 유니크 키 |
+| ID | `BIGINT` | 배치 잡의 기본키 |
+| UNIQUE_KEY | `CHAR(1)` | 배치 잡 시퀀스를 구별하는 유니크 키 |
 
 ## **BATCH_JOB_EXECUTION_SEQ 테이블**
 
@@ -295,8 +279,8 @@ spring:
 
 | 컬럼명 | 타입 | 설명 |
 | --- | --- | --- |
-| ID | `BIGINT` | - 배치 잡 execution의 기본키 |
-| UNIQUE_KEY | `CHAR(1)` | - 배치 잡 execution 시퀀스를 구별하는 유니크 키 |
+| ID | `BIGINT` | 배치 잡 execution의 기본키 |
+| UNIQUE_KEY | `CHAR(1)` | 배치 잡 execution 시퀀스를 구별하는 유니크 키 |
 
 ## **BATCH_STEP_EXECUTION_SEQ 테이블**
 
@@ -304,5 +288,5 @@ spring:
 
 | 컬럼명 | 타입 | 설명 |
 | --- | --- | --- |
-| ID | `BIGINT` | - 배치 step execution의 기본키 |
-| UNIQUE_KEY | `CHAR(1)` | - 배치 step execution 시퀀스를 구별하는 유니크 키 |
+| ID | `BIGINT` | 배치 step execution의 기본키 |
+| UNIQUE_KEY | `CHAR(1)` | 배치 step execution 시퀀스를 구별하는 유니크 키 |
