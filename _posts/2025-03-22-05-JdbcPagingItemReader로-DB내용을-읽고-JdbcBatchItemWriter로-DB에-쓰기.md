@@ -94,7 +94,7 @@ public JdbcPagingItemReader<Customer> jdbcPagingItemReader() throws Exception {
 - JdbcBatchItemWriter Spring Batch에서 제공하는 ItemWriter 인터페이스를 구현한 클래스
 - 데이터를 JDBC를 통해 DB에 저장하는데 사용
 
-# **JdbcBatchItemWriter 구성 요소**
+## **JdbcBatchItemWriter 구성 요소**
 
 - DataSource : 데이터베이스 연결 정보를 지정
 - SqlStatementCreator : 동적으로 query를 생성하는 역할
