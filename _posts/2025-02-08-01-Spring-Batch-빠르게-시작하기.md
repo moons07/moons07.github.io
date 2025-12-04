@@ -1,11 +1,3 @@
----
-title: 01 Spring Batch 빠르게 시작하기
-tags: SpringBatch
-article_header:
-  type: cover
-  image:
-    src: /assets/images/posts/2025-02-08-01-Spring-Batch-빠르게-시작하기/spring_batch_schema.png
----
 # **Spring Batch 초기화 및 스프링배치 필요정보**
 
 ## 기본 프로젝트 구성하기
