@@ -21,7 +21,7 @@ tags: SpringBatch
 
 ### Spring Batch 기본 아키텍처
 
-![spring_batch_doc_sterotyes.png](/assets/images/posts/2025-02-16-02-Spring-Batch-코드-설명-및-아키텍처-알아보기/spring_batch_doc_sterotyes.png)
+![spring_batch_doc_sterotyes.png](/assets/images/posts/2025-02-16-spring-batch/spring_batch_doc_sterotyes.png)
 
 #### JobLauncher
 
@@ -73,7 +73,7 @@ tags: SpringBatch
 
 ### Spring Batch 흐름
 
-![spring_batch_job_flow.jpeg](/assets/images/posts/2025-02-16-02-Spring-Batch-코드-설명-및-아키텍처-알아보기/spring_batch_job_flow.jpeg)
+![spring_batch_job_flow.jpeg](/assets/images/posts/2025-02-16-spring-batch/spring_batch_job_flow.jpeg)
 
 #### 주요 처리 흐름
 
@@ -216,7 +216,7 @@ public class BasicTaskJobConfiguration {
 
 #### 실행결과
 
-![result.png](/assets/images/posts/2025-02-16-02-Spring-Batch-코드-설명-및-아키텍처-알아보기/result.png)
+![result.png](/assets/images/posts/2025-02-16-spring-batch/result.png)
 
 - 실행 순서
     1. Tasklet bean 등록시 afterPropertiesSet 호출
