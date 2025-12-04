@@ -67,15 +67,15 @@ public class After20YearsItemProcessor implements ItemProcessor<CustomerForMybat
 
 ```java
 @Bean
-	public CompositeItemProcessor<CustomerForMybatis, CustomerForMybatis> compositeItemProcessor() {
-		return new CompositeItemProcessorBuilder<CustomerForMybatis, CustomerForMybatis>()
-				.delegates(
-						List.of(
-								new LowCaseItemProcessor(),
-								new After20YearsItemProcessor()
-						)
-				).build();
-	}
+public CompositeItemProcessor<CustomerForMybatis, CustomerForMybatis> compositeItemProcessor() {
+  return new CompositeItemProcessorBuilder<CustomerForMybatis, CustomerForMybatis>()
+      .delegates(
+          List.of(
+              new LowCaseItemProcessor(),
+              new After20YearsItemProcessor()
+          )
+      ).build();
+}
 ```
 
 - `CompositeItemProcessorBuilder`를 사용하여  `CompositeItemProcessor` 를 생성
