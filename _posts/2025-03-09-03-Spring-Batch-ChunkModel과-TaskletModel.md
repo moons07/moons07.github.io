@@ -1,5 +1,5 @@
 ---
-title: 02 Spring Batch ChunkModel과 TaskletModel
+title: 03 Spring Batch ChunkModel과 TaskletModel
 tags: SpringBatch
 ---
 # 03 Spring Batch ChunkModel과 TaskletModel
