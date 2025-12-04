@@ -2,18 +2,20 @@
 
 /* end custom scss snippet */
 /* 블로그 포스트 테이블 스타일 */
-.post-content table {
+.article-content table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.post-content table th,
-.post-content table td {
-  border: 1px solid #ddd;
-  padding: 6px 8px;
+/* 테이블 셀 테두리 및 패딩 재정의 */
+.article-content table th,
+.article-content table td {
+  border: 1px solid #ddd !important;  /* 선 색을 더 진하게 */
+  padding: 6px 8px;                   /* 조금 좁은 패딩 */
 }
 
-.post-content table thead th {
+/* 헤더 행 강조 */
+.article-content table thead th {
   background-color: #f7f7f7;
   font-weight: 600;
 }
