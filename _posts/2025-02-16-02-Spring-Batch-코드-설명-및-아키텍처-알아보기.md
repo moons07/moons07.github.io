@@ -1,5 +1,5 @@
 ---
-title: 01 Spring Batch 코드 설명 및 아키텍처 알아보기
+title: 02 Spring Batch 코드 설명 및 아키텍처 알아보기
 tags: SpringBatch
 ---
 # 02. Spring Batch 코드 설명 및 아키텍처 알아보기
