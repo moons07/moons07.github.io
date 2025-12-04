@@ -2,21 +2,25 @@
 
 /* end custom scss snippet */
 
-/* 블로그 포스트 테이블 스타일 (.article__content 안의 table에 적용) */
-.article__content table {
+/* 전역 block-elements reset 에서 table 의 margin 을 덮어써서 위/아래 간격 정리 */
+.page__content table {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 페이지 메인 영역에서 나오는 모든 테이블에 기본 선 적용 */
+.page__content table {
   width: 100%;
   border-collapse: collapse;
 }
 
-/* 테이블 셀 테두리 및 패딩 재정의 */
-.article__content table th,
-.article__content table td {
-  border: 1px solid #555 !important;  /* 눈에 확 보이도록 진한 회색 */
+.page__content table th,
+.page__content table td {
+  border: 1px solid #555 !important; /* 진한 회색 선으로 명확하게 표시 */
   padding: 6px 8px;
 }
 
-/* 헤더 행 강조 */
-.article__content table thead th {
+.page__content table thead th {
   background-color: #f7f7f7;
   font-weight: 600;
 }
